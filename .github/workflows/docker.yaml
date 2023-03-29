@@ -28,16 +28,16 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CR_PAT }}
 
       - name: "Build and push demo/service-a"
         uses: docker/build-push-action@v3
         env:
           SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         with:
-          context: ./demo/service-a
+          context: ./service-a
           push: true
-          tags: ghcr.io/hiroyaonoe/bcop/bcop-demo-service-a:latest
+          tags: ghcr.io/picop-rd/demo/service-a:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           ssh: default
@@ -47,9 +47,9 @@ jobs:
         env:
           SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         with:
-          context: ./demo/service-b
+          context: ./service-b
           push: true
-          tags: ghcr.io/hiroyaonoe/bcop/bcop-demo-service-b:latest
+          tags: ghcr.io/picop-rd/demo/service-b:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           ssh: default
@@ -59,33 +59,10 @@ jobs:
         env:
           SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
         with:
-          context: ./demo/service-c
+          context: ./service-c
           push: true
-          tags: ghcr.io/hiroyaonoe/bcop/bcop-demo-service-c:latest
+          tags: ghcr.io/picop-rd/demo/service-c:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           ssh: default
 
-      - name: "Build and push benchmark/service-bcop"
-        uses: docker/build-push-action@v3
-        env:
-          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
-        with:
-          context: ./benchmark/service-bcop
-          push: true
-          tags: ghcr.io/hiroyaonoe/bcop/bcop-benchmark-service-bcop:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          ssh: default
-
-      - name: "Build and push benchmark/service-bcop"
-        uses: docker/build-push-action@v3
-        env:
-          SSH_AUTH_SOCK: ${{ env.SSH_AUTH_SOCK }}
-        with:
-          context: ./benchmark/service-http
-          push: true
-          tags: ghcr.io/hiroyaonoe/bcop/bcop-benchmark-service-http:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          ssh: default
