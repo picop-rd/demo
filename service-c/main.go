@@ -10,10 +10,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hiroyaonoe/bcop-go/contrib/github.com/go-sql-driver/mysql/bcopmysql"
-	"github.com/hiroyaonoe/bcop-go/contrib/net/http/bcophttp"
-	"github.com/hiroyaonoe/bcop-go/propagation"
-	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	"github.com/picop-rd/picop-go/contrib/github.com/go-sql-driver/mysql/picopmysql"
+	"github.com/picop-rd/picop-go/contrib/net/http/picophttp"
+	"github.com/picop-rd/picop-go/propagation"
+	picopnet "github.com/picop-rd/picop-go/protocol/net"
 )
 
 var (
@@ -28,7 +28,7 @@ func main() {
 	var err error
 	flag.Parse()
 
-	bcopmysql.RegisterDialContext("tcp", propagation.EnvID{})
+	picopmysql.RegisterDialContext("tcp", propagation.EnvID{})
 	db, err = sql.Open("mysql", *mysqlService)
 	if err != nil {
 		log.Fatal(err)
@@ -48,14 +48,14 @@ func main() {
 	http.HandleFunc("/", handler)
 	server := &http.Server{
 		Addr:        fmt.Sprintf(":%s", *port),
-		Handler:     bcophttp.NewHandler(http.DefaultServeMux, propagation.EnvID{}),
-		ConnContext: bcophttp.ConnContext,
+		Handler:     picophttp.NewHandler(http.DefaultServeMux, propagation.EnvID{}),
+		ConnContext: picophttp.ConnContext,
 	}
 	ln, err := net.Listen("tcp", server.Addr)
 	if err != nil {
 		log.Fatal(err)
 	}
-	bln := bcopnet.NewListener(ln)
+	bln := picopnet.NewListener(ln)
 	fmt.Println("serve http")
 	log.Fatal(server.Serve(bln))
 }

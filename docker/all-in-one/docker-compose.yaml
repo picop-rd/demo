@@ -2,8 +2,8 @@ version: "3"
 
 services:
   proxy-controller:
-    image: ghcr.io/hiroyaonoe/bcop-proxy-controller/bcop-proxy-controller:latest
-    command: --port "8080" --mysql "bcop:bcop@tcp(proxy-controller-db:3306)/bcop?parseTime=true&collation=utf8mb4_bin" --interval 10
+    image: ghcr.io/picop-rd/proxy-controller:latest
+    command: --port "8080" --mysql "picop:picop@tcp(proxy-controller-db:3306)/picop?parseTime=true&collation=utf8mb4_bin" --interval 10
     ports:
       - 8080:8080
     depends_on:
@@ -14,13 +14,13 @@ services:
       - ../../proxy-controller/db-schema:/docker-entrypoint-initdb.d
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: bcop
-      MYSQL_USER: bcop
-      MYSQL_PASSWORD: bcop
-      MYSQL_DATABASE: bcop
+      MYSQL_ROOT_PASSWORD: picop
+      MYSQL_USER: picop
+      MYSQL_PASSWORD: picop
+      MYSQL_DATABASE: picop
 
   proxy-a:
-    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    image: ghcr.io/picop-rd/proxy:latest
     command: --proxy-port "80" --admin-port "9000" --default-addr "service-a-main:80" --propagate=true --controller-url "http://proxy-controller:8080" --id "service-a"
     ports:
       - 9001:80
@@ -42,7 +42,7 @@ services:
       - proxy-a
 
   proxy-b:
-    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    image: ghcr.io/picop-rd/proxy:latest
     command: --proxy-port "80" --admin-port "9000" --default-addr "service-b-main:80" --propagate=true --controller-url "http://proxy-controller:8080" --id "service-b"
     ports:
       - 9002:80
@@ -64,7 +64,7 @@ services:
       - proxy-b
 
   proxy-c:
-    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    image: ghcr.io/picop-rd/proxy:latest
     command: --proxy-port "80" --admin-port "9000" --default-addr "service-c-main:80" --propagate=true --controller-url "http://proxy-controller:8080" --id "service-c"
     ports:
       - 9003:80
@@ -79,7 +79,7 @@ services:
       - proxy-c
 
   proxy-mysql:
-    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    image: ghcr.io/picop-rd/proxy:latest
     command: --proxy-port "3306" --admin-port "9000" --default-addr "service-mysql-main:3306" --propagate=false --controller-url "http://proxy-controller:8080" --id "service-mysql"
     depends_on:
       - proxy-controller

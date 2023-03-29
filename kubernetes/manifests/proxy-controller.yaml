@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: proxy-controller
-  namespace: bcop-system
+  namespace: picop-system
 spec:
   replicas: 1
   selector:
@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: proxy-controller
-          image: "ghcr.io/hiroyaonoe/bcop-proxy-controller/bcop-proxy-controller:latest"
-          command: ['/bin/bcop-proxy-controller', '--port', '8080', '--mysql', 'bcop:bcop@tcp(10.229.71.129:3306)/bcop?parseTime=true&collation=utf8mb4_bin', '--interval', '10']
+          image: "ghcr.io/picop-rd/proxy-controller:latest"
+          command: ['/bin/proxy-controller', '--port', '8080', '--mysql', 'picop:picop@tcp(10.229.71.129:3306)/picop?parseTime=true&collation=utf8mb4_bin', '--interval', '10']
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -27,7 +27,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: proxy-controller
-  namespace: bcop-system
+  namespace: picop-system
 spec:
   type: NodePort
   selector:

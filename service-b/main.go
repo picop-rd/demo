@@ -8,9 +8,9 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/hiroyaonoe/bcop-go/contrib/net/http/bcophttp"
-	"github.com/hiroyaonoe/bcop-go/propagation"
-	bcopnet "github.com/hiroyaonoe/bcop-go/protocol/net"
+	"github.com/picop-rd/picop-go/contrib/net/http/picophttp"
+	"github.com/picop-rd/picop-go/propagation"
+	picopnet "github.com/picop-rd/picop-go/protocol/net"
 )
 
 var (
@@ -26,8 +26,8 @@ func main() {
 
 	server := &http.Server{
 		Addr:        fmt.Sprintf(":%s", *port),
-		Handler:     bcophttp.NewHandler(http.DefaultServeMux, propagation.EnvID{}),
-		ConnContext: bcophttp.ConnContext,
+		Handler:     picophttp.NewHandler(http.DefaultServeMux, propagation.EnvID{}),
+		ConnContext: picophttp.ConnContext,
 	}
 
 	ln, err := net.Listen("tcp", server.Addr)
@@ -35,7 +35,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	bln := bcopnet.NewListener(ln)
+	bln := picopnet.NewListener(ln)
 	fmt.Println("serve http")
 	log.Fatal(server.Serve(bln))
 }
@@ -43,7 +43,7 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	// child serviceにリクエスト
 	client := &http.Client{
-		Transport: bcophttp.NewTransport(nil, propagation.EnvID{}),
+		Transport: picophttp.NewTransport(nil, propagation.EnvID{}),
 	}
 	req, err := http.NewRequestWithContext(r.Context(), r.Method, *childService, r.Body)
 	if err != nil {
