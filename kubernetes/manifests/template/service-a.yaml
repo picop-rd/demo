@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a-$(ENV)
+  namespace: service-a
+  labels:
+    env: $(ENV)
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-a-$(ENV)
+  template:
+    metadata:
+      labels:
+        app: service-a-$(ENV)
+    spec:
+      containers:
+        - name: service-a
+          image: "ghcr.io/hiroyaonoe/bcop/bcop-demo-service-a:latest"
+          command: ['/bin/service-a', '--port', '80', '--child-service', 'http://proxy-b.service-b.svc.cluster.local:80', '--message', 'This is service-a-$(ENV)']
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: ghcrcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-a-$(ENV)
+  namespace: service-a
+spec:
+  type: NodePort
+  selector:
+    app: service-a-$(ENV)
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

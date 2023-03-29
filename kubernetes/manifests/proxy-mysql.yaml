@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-mysql
+  namespace: service-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-mysql
+  template:
+    metadata:
+      labels:
+        app: proxy-mysql
+    spec:
+      containers:
+        - name: proxy
+          image: "ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest"
+          command: ['/bin/bcop-proxy', '--proxy-port', '3306', '--admin-port', '9000', '--default-addr', '10.229.71.130:13306', '--propagate=false', '--controller-url', 'http://proxy-controller.bcop-system.svc.cluster.local:8080', '--id', 'service-mysql']
+          imagePullPolicy: Always
+          ports:
+            - name: proxy
+              containerPort: 3306
+            - name: admin
+              containerPort: 9000
+      imagePullSecrets:
+        - name: ghcrcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-mysql
+  namespace: service-mysql
+spec:
+  type: NodePort
+  selector:
+    app: proxy-mysql
+  ports:
+    - name: proxy
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+    - name: admin
+      protocol: TCP
+      port: 9000
+      targetPort: 9000

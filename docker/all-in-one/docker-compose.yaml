@@ -1,0 +1,121 @@
+version: "3"
+
+services:
+  proxy-controller:
+    image: ghcr.io/hiroyaonoe/bcop-proxy-controller/bcop-proxy-controller:latest
+    command: --port "8080" --mysql "bcop:bcop@tcp(proxy-controller-db:3306)/bcop?parseTime=true&collation=utf8mb4_bin" --interval 10
+    ports:
+      - 8080:8080
+    depends_on:
+      - proxy-controller-db
+  proxy-controller-db:
+    image: mysql:8.0
+    volumes:
+      - ../../proxy-controller/db-schema:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: bcop
+      MYSQL_USER: bcop
+      MYSQL_PASSWORD: bcop
+      MYSQL_DATABASE: bcop
+
+  proxy-a:
+    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    command: --proxy-port "80" --admin-port "9000" --default-addr "service-a-main:80" --propagate=true --controller-url "http://proxy-controller:8080" --id "service-a"
+    ports:
+      - 9001:80
+    depends_on:
+      - proxy-controller
+  service-a-main:
+    build:
+      context: ../../service-a/
+      dockerfile: ./Dockerfile
+    command: --port "80" --child-service "http://proxy-b:80" --message "This is service-a-main"
+    depends_on: 
+      - proxy-a
+  service-a-feature-1:
+    build:
+      context: ../../service-a/
+      dockerfile: ./Dockerfile
+    command: --port "80" --child-service "http://proxy-b:80" --message "This is service-a-feature-1"
+    depends_on: 
+      - proxy-a
+
+  proxy-b:
+    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    command: --proxy-port "80" --admin-port "9000" --default-addr "service-b-main:80" --propagate=true --controller-url "http://proxy-controller:8080" --id "service-b"
+    ports:
+      - 9002:80
+    depends_on:
+      - proxy-controller
+  service-b-main:
+    build:
+      context: ../../service-b/
+      dockerfile: ./Dockerfile
+    command: --port "80" --child-service "http://proxy-c:80" --message "This is service-b-main"
+    depends_on: 
+      - proxy-b
+  service-b-feature-2:
+    build:
+      context: ../../service-b/
+      dockerfile: ./Dockerfile
+    command: --port "80" --child-service "http://proxy-c:80" --message "This is service-b-feature-2"
+    depends_on: 
+      - proxy-b
+
+  proxy-c:
+    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    command: --proxy-port "80" --admin-port "9000" --default-addr "service-c-main:80" --propagate=true --controller-url "http://proxy-controller:8080" --id "service-c"
+    ports:
+      - 9003:80
+    depends_on:
+      - proxy-controller
+  service-c-main:
+    build:
+      context: ../../service-c/
+      dockerfile: ./Dockerfile
+    command: --port "80" --mysql-service "service-mysql:service-mysql@tcp(proxy-mysql:3306)/demoservice?parseTime=true&collation=utf8mb4_bin" --message "This is service-c-main"
+    depends_on: 
+      - proxy-c
+
+  proxy-mysql:
+    image: ghcr.io/hiroyaonoe/bcop-proxy/bcop-proxy:latest
+    command: --proxy-port "3306" --admin-port "9000" --default-addr "service-mysql-main:3306" --propagate=false --controller-url "http://proxy-controller:8080" --id "service-mysql"
+    depends_on:
+      - proxy-controller
+  service-mysql-main:
+    image: mysql:8.0
+    volumes:
+      - ../../service-mysql/db-schema:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: service-mysql
+      MYSQL_USER: service-mysql
+      MYSQL_PASSWORD: service-mysql
+      MYSQL_DATABASE: demoservice
+    depends_on:
+      - proxy-mysql
+  service-mysql-feature-1:
+    image: mysql:8.0
+    volumes:
+      - ../../service-mysql/db-schema:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: service-mysql
+      MYSQL_USER: service-mysql
+      MYSQL_PASSWORD: service-mysql
+      MYSQL_DATABASE: demoservice
+    depends_on:
+      - proxy-mysql
+  service-mysql-feature-2:
+    image: mysql:8.0
+    volumes:
+      - ../../service-mysql/db-schema:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: service-mysql
+      MYSQL_USER: service-mysql
+      MYSQL_PASSWORD: service-mysql
+      MYSQL_DATABASE: demoservice
+    depends_on:
+      - proxy-mysql
