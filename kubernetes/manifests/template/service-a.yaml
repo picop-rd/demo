@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: service-a
-          image: "ghcr.io/hiroyaonoe/bcop/bcop-demo-service-a:latest"
+          image: "ghcr.io/picop-rd/demo/service-a:latest"
           command: ['/bin/service-a', '--port', '80', '--child-service', 'http://proxy-b.service-b.svc.cluster.local:80', '--message', 'This is service-a-$(ENV)']
           imagePullPolicy: Always
           ports:

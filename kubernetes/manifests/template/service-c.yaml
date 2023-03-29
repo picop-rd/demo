@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: service-c
-          image: "ghcr.io/hiroyaonoe/bcop/bcop-demo-service-c:latest"
+          image: "ghcr.io/picop-rd/demo/service-c:latest"
           command: ['/bin/service-c', '--port', '80', '--mysql-service', 'service-mysql:service-mysql@tcp(proxy-mysql.service-mysql.svc.cluster.local:3306)/demoservice?parseTime=true&collation=utf8mb4_bin', '--message', 'This is service-c-$(ENV)']
           imagePullPolicy: Always
           ports:
