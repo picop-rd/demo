@@ -3,7 +3,7 @@ version: "3"
 services:
   proxy-controller:
     image: ghcr.io/picop-rd/proxy-controller:latest
-    command: --port "8080" --mysql "picop:picop@tcp(10.229.71.129:3306)/picop?parseTime=true&collation=utf8mb4_bin" --interval 10
+    command: --port "8080" --mysql "picop:picop@tcp(192.168.0.4:3306)/picop?parseTime=true&collation=utf8mb4_bin" --interval 10
     ports:
       - 8080:8080
 
@@ -68,6 +68,6 @@ services:
 
   proxy-mysql:
     image: ghcr.io/picop-rd/proxy:latest
-    command: --proxy-port "3306" --admin-port "9000" --default-addr "10.229.71.130:13306" --propagate=false --controller-url "http://proxy-controller:8080" --id "service-mysql"
+    command: --proxy-port "3306" --admin-port "9000" --default-addr "192.168.0.3:13306" --propagate=false --controller-url "http://proxy-controller:8080" --id "service-mysql"
     depends_on:
       - proxy-controller

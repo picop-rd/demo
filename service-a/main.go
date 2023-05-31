@@ -41,7 +41,6 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	// child serviceにリクエスト
 	client := &http.Client{
 		Transport: picophttp.NewTransport(nil, propagation.EnvID{}),
 	}
@@ -58,9 +57,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	w.WriteHeader(resp.StatusCode)
-	// messageを返す
 	w.Write([]byte(*message + "\n"))
-	// child serviceのレスポンスを返す
 	io.Copy(w, resp.Body)
 	return
 }

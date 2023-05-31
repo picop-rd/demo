@@ -16,7 +16,7 @@ spec:
       containers:
         - name: proxy-controller
           image: "ghcr.io/picop-rd/proxy-controller:latest"
-          command: ['/bin/proxy-controller', '--port', '8080', '--mysql', 'picop:picop@tcp(10.229.71.129:3306)/picop?parseTime=true&collation=utf8mb4_bin', '--interval', '10']
+          command: ['/bin/proxy-controller', '--port', '8080', '--mysql', 'picop:picop@tcp(192.168.0.4:3306)/picop?parseTime=true&collation=utf8mb4_bin', '--interval', '10']
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -36,3 +36,4 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
+      nodePort: 31001

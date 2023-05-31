@@ -16,7 +16,7 @@ spec:
       containers:
         - name: proxy
           image: "ghcr.io/picop-rd/proxy:latest"
-          command: ['/bin/proxy', '--proxy-port', '3306', '--admin-port', '9000', '--default-addr', '10.229.71.130:13306', '--propagate=false', '--controller-url', 'http://proxy-controller.picop-system.svc.cluster.local:8080', '--id', 'service-mysql']
+          command: ['/bin/proxy', '--proxy-port', '3306', '--admin-port', '9000', '--default-addr', '192.168.0.3:13306', '--propagate=false', '--controller-url', 'http://proxy-controller.picop-system.svc.cluster.local:8080', '--id', 'service-mysql']
           imagePullPolicy: Always
           ports:
             - name: proxy

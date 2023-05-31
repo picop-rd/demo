@@ -63,7 +63,6 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	var header int
 	var data string
-	// mysql serviceにリクエスト
 	switch r.Method {
 	case http.MethodGet:
 		header, data = get(r)
@@ -75,7 +74,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(header)
 	if header == http.StatusOK {
-		// messageを返す
 		w.Write([]byte(*message + "\n"))
 		w.Write([]byte(data))
 	}
