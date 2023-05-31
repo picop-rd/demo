@@ -19,7 +19,7 @@ docker compose up
 ```
 
 ### Docker Compose with Three Hosts(Separated Web Servers, a MySQL Server, and Proxy Controller DB)
-##### Host Web
+#### Host Web
 It has the following resources.
 - Proxy Controller
 - Proxy A/B/C
@@ -32,7 +32,7 @@ vim docker-compose.yaml # Please replace the IP address 192.168.0.3 with that of
 docker compose up
 ```
 
-##### Host MySQL
+#### Host MySQL
 It has Service MySQL[main, feature-1, feature-2].
 ```
 cd docker/only-service-mysql
@@ -40,7 +40,7 @@ docker compose up
 ```
 Please confirm that the Host Web can access the port 13306, 13307, and 13308 of the Host MySQL.
 
-##### Host Controller DB
+#### Host Controller DB
 It has Proxy Controller DB.
 1. Install MySQL
 2. Create MySQL user `picop` with password `picop`
@@ -53,7 +53,7 @@ Please confirm that the Host Web can access the port 3306 of the Host Controller
 ### Kubernetes
 Please prepare Kubernetes cluster and the other two hosts.
 
-##### Kubernetes Cluster
+#### Kubernetes Cluster
 It has the following resources.
 - Proxy Controller
 - Proxy A/B/C
@@ -77,7 +77,7 @@ kubectl apply proxy-mysql.yaml
 ./script/create-service-b.sh feature-2 | kubectl apply -f -
 ```
 
-##### Host MySQL and Host Controller DB
+#### Host MySQL and Host Controller DB
 It is the same as the case of Docker Compose with Three Hosts.
 
 ## Configure Proxy Controller
