@@ -18,7 +18,8 @@ cd docker/all-in-one
 docker compose up 
 ```
 
-### Docker Compose with Three Hosts(Separated Web Servers, a MySQL Server, and Proxy Controller DB)
+### Docker Compose with Three Hosts
+Separated Web Servers, a MySQL Server, and Proxy Controller DB
 #### Host Web
 It has the following resources.
 - Proxy Controller
